@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/vlogger.gif' %}">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <title>Zlingo Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #191C24;
+            /* Dark background color for the body */
+            color: #f8f9fa;
+            /* Light text color */
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #343a50;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+
+
+        }
+
+        .navbar-brand {
+            color: #f8f9fa;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-nav .nav-link {
+            color: #cfcfcf;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #f8f9fa;
+        }
+
+        #sidebar {
+            height: 100%;
+            width: 265px;
+            position: fixed;
+            background-color: #343a50;
+            padding-top: 20px;
+            margin-top: 120px;
+            z-index: 900;
+        }
+
+        #sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #cfcfcf;
+            display: block;
+            transition: 0.3s;
+            border-radius: 10px;
+            /* Rounded corners for better appearance */
+        }
+
+        #sidebar a:hover {
+            background-color: #454d55;
+            /* Hover background color */
+            color: #f8f9fa;
+            /* Hover text color */
+        }
+
+        #sidebar a.active {
+            background-color: #6c757d;
+            /* Active background color */
+            color: #ffffff;
+            /* Active text color */
+        }
+
+        #content {
+
+
+            margin-top: 60px;
+            /* Adjusted to match the height of the navbar */
+            padding: 16px;
+            transition: margin-left 0.5s;
+
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+
+            #content {
+                margin-top: 50px;
+            }
+        }
+
+        .fixed-height-card {
+            height: 150px;
+            /* Set your desired fixed height */
+            overflow: hidden;
+            /* Hide overflow content if it exceeds the fixed height */
+            transition: box-shadow 0.3s;
+            font-size: 20px;
+        }
+
+        .card-block {
+            padding: 15px;
+
+
+        }
+
+        .fixed-height-card {
+            transition: 0.7s;
+        }
+
+        .fixed-height-card:hover {
+            transform: scale(1.1);
+            border: 5px outset solid #3498db;
+        }
+
+        .dropdown-check-list {
+            display: inline-block;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        .dropdown-check-list .anchor {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px 50px 5px 10px;
+            border: 1px solid #ccc;
+        }
+
+        .dropdown-check-list .anchor:after {
+            position: absolute;
+            content: "";
+            border-left: 2px solid black;
+            border-top: 2px solid black;
+            padding: 5px;
+            right: 10px;
+            top: 20%;
+            -moz-transform: rotate(-135deg);
+            -ms-transform: rotate(-135deg);
+            -o-transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+            -webkit-overflow-scrolling: auto;
+        }
+
+        .dropdown-check-list .anchor:active:after {
+            right: 8px;
+            top: 21%;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        .dropdown-check-list ul.items {
+            padding: 2px;
+            display: none;
+            overflow-y: scroll;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-top: none;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        .dropdown-check-list ul.items li {
+            list-style: none;
+            -webkit-overflow-scrolling: scroll;
+        }
+
+        .dropdown-check-list.visible .anchor {
+            color: #0094ff;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        .dropdown-check-list.visible .items {
+            display: block;
+            -webkit-overflow-scrolling: auto;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/sitelogo3.png' %}" alt="Site Placeholder" width="250" height="100">
+                <b>Dashboard</b>
+            </a>
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% block sidebar %}
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+
+                    <a class="nav-link" href="http://127.0.0.1:8000/admins/dashboard/"><img
+                            src="{% static 'images/icons/speedometer.gif' %}" alt="Site Placeholder" width="50"
+                            height="50" class="mr-2" style="border-radius: 30%;">&nbsp;<B>Dashboard</B></a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#sales"><img src="{% static 'images/icons/bar-chart.gif' %}"
+                            alt="Site Placeholder" width="50" height="50" class="mr-2"
+                            style="border-radius: 30%;">&nbsp;<B>Sales</B></a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="/admins/customers">
+                        <img src="{% static 'images/icons/customer.gif' %}" alt="Site Placeholder" width="50"
+                            height="50" class="mr-2" style="border-radius: 30%;">
+                        <b>Customers</b>
+                    </a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link active" href="/admins/products"> <img
+                            src="{% static 'images/icons/pallets.gif' %}" alt="Site Placeholder" width="50" height="50"
+                            class="mr-2" style="border-radius: 30%;">
+                        <b> Products</b>
+                    </a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#engagement"><img src="{% static 'images/icons/engagement.gif' %}"
+                            alt="Site Placeholder" width="50" height="50" class="mr-2" style="border-radius: 30%;">
+                        <b>Engagement</b>
+                    </a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#orders"><img src="{% static 'images/icons/pallets.gif' %}"
+                            alt="Site Placeholder" width="50" height="50" class="mr-2" style="border-radius: 30%;">
+                        <b> Orders</b>
+                    </a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#complaints"><img src="{% static 'images/icons/bad-review.gif' %}"
+                            alt="Site Placeholder" width="50" height="50" class="mr-2" style="border-radius: 30%;">
+                        <b> Complaints</b>
+                    </a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="/admins/sellers"><img
+                            src="{% static 'images/icons/real-estate-agent.gif' %}" alt="Site Placeholder" width="50"
+                            height="50" class="mr-2" style="border-radius: 30%;">
+                        <b> Sellers</b>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#sellers"><img src="{% static 'images/icons/gears.gif' %}"
+                            alt="Site Placeholder" width="50" height="50" class="mr-2" style="border-radius: 30%;">
+                        <b> Site</b>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <br><br><br><br><br><br>
+    <!-- THE MAIN CONTENT -->
+    <div id="main" style="margin-left: 300px;">
+        <!-- THESE ARE TOP CARDS -->
+
+
+
+        <div class="card bg-dark" style="width: 100%;">
+            <div class="card-header bg-dark text-light text-center">
+                <h1>Products</h1>
+            </div>
+            <div class="card-body bg-dark">
+                <!-- Row 2 -->
+                <div class="row col-md-12">
+                    <!-- Column 1 -->
+                    <div class="col bg-dark">
+                        <div class="input-group mb-3">
+
+                            <button type="button" id="add_product_btn" class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#addPro">
+                                Add Product
+                            </button>
+
+
+                        </div>
+                    </div>
+                    <!-- Column 2 -->
+                    <form id="search_pro_form">
+                        <div class="bg-dark col">
+
+                            <input type="text" class="form-control" id="search_pro_field" placeholder="Search">
+
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+
+                        </div>
+                    </form>
+                    <!-- Column 3 -->
+
+                </div>
+
+                <!-- Row 3 -->
+                <div class="row bg-dark mt-3">
+                    <div class="col bg-dark col-md-12">
+                        <!-- Table -->
+                        <table class="table table-dark fs-4 text-center" style="table-layout: fixed;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productContainer">
+                                <!-- Table rows will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex float-left">
+                <button id="prevPageBtnPro" class="btn btn-primary">Previous</button>
+                <button id="nextPageBtnPro" class="btn btn-primary">Next</button>
+            </div>
+        </div>
+
+        <!-- ADD PRODUCT MODAL -->
+        <div class="modal modal-xl  fade" id="addPro" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog text-dark">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h1 class="modal-title fs-4" id="exampleModalLabel">Add Product</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-dark text-light">
+
+                        <!-- Product Form -->
+                        <form id="productForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <!-- First Column -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="product_brand" class="form-label">Product Brand:</label>
+                                        <input type="text" class="form-control" id="product_brand" name="product_brand"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="product_name" class="form-label">Product Name:</label>
+                                        <input type="text" class="form-control" id="product_name" name="product_name"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="product_seller" class="form-label">Seller:</label>
+                                        <select class="form-control" id="product_seller" name="seller" required>
+                                            <!-- Populate options dynamically if needed -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="product_category" class="form-label">Category:</label>
+                                        <select class="form-control" id="product_category" name="category" required>
+                                            <!-- Populate options dynamically if needed -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description:</label>
+                                        <textarea class="form-control" id="description" name="description" rows="3"
+                                            required></textarea>
+                                    </div>
+                                </div>
+                                <!-- Second Column -->
+                                <div class="col-md-6">
+
+
+                                    <div class="mb-3">
+                                        <label for="tags" class="form-label">Tags:</label>
+                                        <div id="list1" class="dropdown-check-list" tabindex="100">
+                                            <span class="anchor">Select Tags for Product</span>
+                                            <ul class="items" id="product_tags" style="height:250px;">
+
+                                                <!-- Add more tags dynamically if needed -->
+                                            </ul>
+                                        </div>
+
+
+                                        <input type="text" class="form-control" id="customTagsInput"
+                                            name="customTagsInput" placeholder="Add Custom Tags">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="variantType">Variant Type</label>
+                                        <select class="form-control" id="variantType" name="variantType">
+                                            <!-- Options will be dynamically loaded using AJAX and jQuery -->
+                                        </select>
+                                        <input type="text" value="testval1" class="form-control mt-3" id="variantValue"
+                                            name="variantValue" placeholder="Enter Variant Value">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="price" value="testPrice1" class="form-label">Price:</label>
+                                        <input type="number" class="form-control" id="price" name="price" step="5"
+                                            required oninput="validatePrice()">
+                                        <small id="priceValidation" class="form-text text-danger"></small>
+                                    </div>
+
+                                    <div class="mb-3">
+
+                                        <input type="file" class="form-control mt-3" id="imageFL" accept="image/*"
+                                            name="imageFL" placeholder="Select an image">
+                                    </div>
+
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ADD VARIANT -->
+
+
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            function validatePrice() {
+                var priceInput = $('#price');
+                var priceValidation = $('#priceValidation');
+                var priceRegex = /^\d+(\.\d{1,2})?$/;
+
+                if (!priceRegex.test(priceInput.val())) {
+                    priceValidation.text('Please enter a valid price (up to 2 decimal places)');
+                } else {
+                    priceValidation.text('');
+                }
+            }
+        </script>
+
+
+
+        <br>
+        <!-- THESE ARE THE CAEGORY CARD -->
+        <div style="display: flex; padding: 10px;margin-top: -10px;">
+
+
+            <div class=" card bg-dark text-light" style="width: 48rem;">
+                <div class=" bg-dark text-light card-header text-center">
+                    <h1>Categories</h1>
+                </div>
+                <div class="bg-dark text-light card-body">
+                    <!-- Row 2 -->
+                    <div class="bg-dark text-light row col-md-12">
+                        <!-- Column 1 -->
+                        <div class="col">
+                            <div class="bg-dark text-light input-group mb-3">
+
+                                <button type="button" class="btn btn-primary" id="add_cat_btn" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                    Add Category
+                                </button>
+
+
+                            </div>
+                        </div>
+                        <!-- Column 2 -->
+                        <form id="search_cat_form">
+                            <div class="input-group mb-3">
+
+                                <input type="text" class="form-control" id="search_cat_field"
+                                    placeholder="Search Tag..">
+                                <button class="btn btn-info" type="submit" id="search_tag_btn">Search</button>
+                            </div>
+                        </form>
+                        <!-- Column 3 -->
+
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="bg-dark text-light row mt-3">
+                        <div class="bg-dark text-light col">
+                            <!-- Table -->
+                            <table class="table-dark text-light table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Parent</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody CLASS="bg-dark text-light" id="categoryContainer">
+                                    <!-- Table rows will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class=" bg-dark text-light container d-flex float-left">
+                    <button id="prevPageBtn" class="btn btn-primary">Previous</button>
+                    <button id="nextPageBtn" class="btn btn-primary">Next</button>
+                </div>
+            </div>
+            &nbsp;&nbsp;
+            <!-- Second Card (Similar structure as the first card) -->
+            <div class=" bg-dark text-light card" style="width: 48rem;">
+                <div class="card  bg-dark">
+                    <div class="card-header bg-dark text-light text-center">
+                        <h1>Tags</h1>
+                    </div>
+                    <div class="card-body bg-dark">
+                        <!-- Row 2 -->
+                        <div class="row col-md-12 bg-dark">
+                            <!-- Column 1 -->
+                            <div class="col bg-dark">
+                                <form method="POST" id="add_tag_form">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+
+                                        <input type="text" class="form-control" id="tag_name" placeholder="Insert Tag">
+                                        <button class="btn btn-success" type="submit">Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Column 2 -->
+                            <div class="col bg-dark">
+
+                                <form id="search_tag_form">
+                                    <div class="input-group mb-3">
+
+                                        <input type="text" class="form-control" id="search_tag_field"
+                                            placeholder="Search Tag..">
+                                        <button class="btn btn-info" type="submit" id="search_tag_btn">Search</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <!-- Column 3 -->
+
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="CARD bg-dark  row mt-3">
+                            <div class="col">
+                                <!-- Table -->
+                                <table class="table table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tagContainer" style="table-layout: fixed;">
+                                        <!-- Table rows will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex float-left">
+                        <button id="prevPageBtnTag" class="btn btn-primary">Previous</button>
+                        <button id="nextPageBtnTag" class="btn btn-primary">Next</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Add Category Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-dark" id="exampleModalLabel">Add Category</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="cat_add_form">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="cat_add_field" class="form-label text-dark">Name</label>
+                                <input type="text" class="form-control form-control-lg" id="cat_add_field"
+                                    placeholder="category name..">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cat_add_field" class="form-label text-dark">Parent</label>
+                                <select class="form-control" id="parent-cat">
+
+                                </select>
+
+
+                            </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h5 class="modal-title text-dark" id="editCustomerModalLabel">
+                        Edit Category
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="cat_edit_form">
+                    <div class="modal-body">
+                        <div class="mb-3" id="row_id_container">
+
+                        </div>
+                        <label for="editCustomerName">Name:</label>
+                        <input type="text" id="edit_cat_name" class="form-control" value="{{ customer.name }}">
+
+
+                        <label for="editCustomerParent">Parent:</label>
+                        <select id="edit_cat_parent" class="form-control">
+
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        var checkList = document.getElementById('list1');
+        checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+            if (checkList.classList.contains('visible'))
+                checkList.classList.remove('visible');
+            else
+                checkList.classList.add('visible');
+        }
+
+
+
+    </script>
+
+    <!-- category script -->
+    <script>
+        $(document).ready(function () {
+
+            var currentPage = 1;
+            fetchAllCategory();
+            // ADD CATEGORY FUNCTION START
+
+
+            $('#search_cat_form').submit(function (e) {
+                e.preventDefault();
+                const searchField = $('#search_cat_field').val();
+                fetchAllCategory(1, searchField);
+
+            });
+
+
+
+
+
+            $("#cat_add_form").submit(function (event) {
+
+                event.preventDefault();
+
+
+                var formData = {
+
+                    "name": $("#cat_add_field").val(),
+                    "parent": $("#parent-cat").val()
+
+                };
+                var url = "{% url 'category-op' %}";
+
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function (data) {
+                        fetchAllCategory();
+                        $('#exampleModal').modal('hide');
+                        alert("Category Added successfully!");
+                        $('#cat_add_field').val('');
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+            });
+
+            //edit category form
+            $("#cat_edit_form").submit(function (event) {
+
+                event.preventDefault();
+
+                var row_id_category = $("#row_id_field").val();
+                var formData = {
+
+                    "name": $("#edit_cat_name").val(),
+                    "parent": $("#edit_cat_nameparent").val()
+
+                };
+                var url = `/admins/api-category/${row_id_category}/`;
+                alert(url);
+                alert(row_id_category);
+
+                $.ajax({
+                    type: "PUT",
+                    url: url,
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    success: function (data) {
+                        fetchAllCategory();
+                        $('#exampleModal').modal('hide');
+                        alert("Category Added successfully!");
+                        $('#cat_add_field').val('');
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+            });
+            //ADD CATEGORY FUNCTION END
+
+
+
+
+            //FETCH CATEGORIES FUNCTION START
+
+            function fetchAllCategory(pageNumber = 1, searchField = '') {
+                var url = "{% url 'category-op' %}";
+                var ordering = "row_id";
+
+                var requestData = {
+                    limit: 10,
+
+                    page: pageNumber,
+                    ordering: ordering
+                };
+
+                if (searchField) {
+                    url = "/admins/api-category/";
+                    requestData.search = searchField;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: 'json',
+                    data: requestData,
+                    success: function (data) {
+                        console.log(data);
+                        displayCategory(data.results);
+                        $('#prevPageBtn').prop('disabled', !data.previous);
+                        $('#nextPageBtn').prop('disabled', !data.next);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        handleAjaxError(errorThrown, 'Error fetching customers: ' + textStatus);
+                    }
+                });
+            }
+            $('#prevPageBtn').click(function (event) {
+                currentPage--;
+                fetchAllCategory(currentPage, $('#search_tag_field').val());
+            });
+
+            $('#nextPageBtn').click(function (event) {
+                currentPage++;
+                fetchAllCategory(currentPage, $('#search_tag_field').val());
+            });
+
+            //FETCH CATEGORIES FUNCTION END
+
+            //populate category dropdown function
+            $('#add_cat_btn').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'category-op' %}",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var parentCategoryDropdown = $('#parent-cat');
+                        parentCategoryDropdown.empty();
+                        parentCategoryDropdown.append($('<option>').text('Select Parent Category').val(''));
+
+
+                        $.each(data.results, function (index, category) {
+                            var parent_row = $('<option value="' + category.row_id + '">' + category.name + '</option>');
+                            parentCategoryDropdown.append(parent_row);
+                        });
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+            });
+
+
+
+            //populate category dropdown end
+
+            //DISPLAY CATEGORY FUNCTION START
+            function displayCategory(customers) {
+                var customerContainer = $('#categoryContainer');
+                customerContainer.empty();
+
+                $.each(customers, function (index, customer) {
+                    var customerRow = $('<tr>' +
+                        '<td>' + customer.row_id + '</td>' +
+                        '<td>' + customer.name + '</td>' +
+                        '<td>' + customer.parent + '</td>' +
+
+
+                        '<td id="usr_pass">' +
+                        ' <button class="btn btn-warning btn-sm action-button action-btn" onclick="editCategory(' + customer.row_id + ', \'' + customer.name + '\', ' + customer.parent + ')"><b>Edit🖋️</b></button>' +
+                        ' <button class="btn btn-danger btn-sm action-button action-btn" onclick="deleteCategory(' + customer.row_id + ')"><b>Delete🗑️</b></button>' +
+                        '</td></tr>'
+                    );
+                    customerContainer.append(customerRow);
+                });
+            }
+            //DISPLAY CATEGORY FUNCTION END
+
+            //DELETE CATEGORY
+
+            window.deleteCategory = function (row_id) {
+
+                Swal.fire
+                    ({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            $.ajax({
+                                type: "DELETE",
+                                url: `/admins/api-category/${row_id}/`,
+                                dataType: 'json',
+                                success: function () {
+
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'The category has been deleted.',
+                                        icon: 'success',
+                                        showConfirmButton: false,
+                                        timer: 500
+                                    });
+
+
+                                    fetchAllCategory();
+                                },
+                                error: function (error) {
+
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An error occurred while deleting the customer.',
+                                        icon: 'error'
+                                    });
+                                    handleAjaxError(error.responseText, 'Error deleting customer.');
+                                }
+                            });
+                        }
+                    });
+            }
+
+
+            ///EDIT CUSTOMER
+
+            window.editCategory = function (rowId, name, parent) {
+
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'category-op' %}",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var parentCategoryDropdown = $('#edit_cat_parent');
+                        parentCategoryDropdown.empty();
+                        parentCategoryDropdown.append($('<option>').text('Select Parent Category').val(''));
+
+                        var categoryRowIdInput = $('#row_id_container');
+                        categoryRowIdInput.append($('<input type="hidden" id="row_id_field" value="' + rowId + '">'));
+
+
+                        $.each(data.results, function (index, category) {
+                            if (category.name !== name) {
+                                var parent_row = $('<option value="' + category.row_id + '">' + category.name + '</option>');
+                                parentCategoryDropdown.append(parent_row);
+                            }
+                        });
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+
+
+
+                $('#edit_cat_name').val(name);
+                $('#edit_cat_parent').val(parent);
+                $('#editCustomerModal').modal('show');
+            }
+
+
+
+            function handleAjaxError(error, errorMessage) {
+                console.error('Error:', error);
+                alert(error);
+            }
+        });
+    </script>
+
+    <!-- Tags SCRIPT HAI BHAI -->
+    <script>
+        $(document).ready(function () {
+            var currentPage = 1
+            fetchAlltag();
+
+
+            $('#search_tag_form').on('input', function (e) {
+                e.preventDefault();
+                const searchField = $('#search_tag_field').val();
+                fetchAlltag(1, searchField);
+            });
+
+
+            function fetchAlltag(pageNumber = 1, searchField = '') {
+
+
+                var url = "{% url 'tag-op' %}";
+                var ordering = "tag_id";
+
+                var requestData = {
+                    limit: 10,
+                    offset: (pageNumber - 1) * 10,
+                    page: pageNumber,
+                    ordering: ordering
+                };
+
+                if (searchField) {
+                    url = "/admins/api-tag/";
+                    requestData.search = searchField;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: 'json',
+                    data: requestData,
+                    success: function (data) {
+                        console.log(data);
+
+                        displayTags(data.results);
+                        $('#prevPageBtnTag').prop('disabled', !data.previous);
+                        $('#nextPageBtnTag').prop('disabled', !data.next);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        handleAjaxError(errorThrown, 'Error fetching customers: ' + textStatus);
+                    }
+                });
+
+
+            }
+            $('#prevPageBtnTag').click(function (event) {
+                currentPage--;
+                fetchAlltag(currentPage, $('#search_tag_field').val());
+            });
+
+            $('#nextPageBtnTag').click(function (event) {
+                currentPage++;
+                fetchAlltag(currentPage, $('#search_tag_field').val());
+            });
+
+            //tag add form DO NO TOUCH
+            $('#add_tag_form').submit(function (e) {
+                e.preventDefault();
+
+
+                var formData = {
+                    'tag_name': $('#tag_name').val()
+                };
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'tag-op' %}",
+                    data: JSON.stringify(formData),
+                    dataType: 'json',
+                    contentType: "application/json",
+
+                    success: function (data) {
+                        fetchAlltag();
+                        $('#tag_name').val('');
+
+
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.error('Error adding tag:', error);
+                    }
+                });
+            });
+
+
+
+
+
+            //display tag function DNT
+            function displayTags(customers) {
+                var customerContainer = $('#tagContainer');
+                customerContainer.empty();
+
+                $.each(customers, function (index, customer) {
+                    var customerRow = $('<tr>' +
+                        '<td>' + customer.tag_id + '</td>' +
+                        '<td>' + '#' + customer.tag_name + '</td>' +
+
+
+
+                        '<td id="usr_pass">' +
+                        ' <button class="btn btn-warning btn-sm action-button action-btn" onclick="editTag(' + customer.tag_id + ', \'' + customer.tag_name + '"><b>Edit🖋️</b></button>' +
+                        ' <button class="btn btn-danger btn-sm action-button action-btn" onclick="deleteTag(' + customer.tag_id + ')"><b>Delete🗑️</b></button>' +
+                        '</td></tr>'
+                    );
+                    customerContainer.append(customerRow);
+                });
+            }
+
+            window.deleteTag = function (tag_id) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: `/admins/api-tag/${tag_id}/`,
+                            dataType: 'json',
+                            success: function () {
+                                fetchAlltag();
+                                Swal.fire({
+                                    title: 'Deleted!',
+                                    text: 'The Tag has been deleted.',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                            },
+                            error: function (error) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'An error occurred while deleting the tag.',
+                                    icon: 'error'
+                                });
+                                handleAjaxError(error.responseText, 'Error deleting tag.');
+                            }
+                        });
+                    }
+                });
+            }
+
+
+            function handleAjaxError(error, errorMessage) {
+                console.error('Error:', error);
+                alert(error);
+            }
+
+
+        });
+    </script>
+
+    <!-- product details modal -->
+    <div class="modal fade text-dark" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="productDetailsModalLabel">Details of Product: <strong><span
+                                id="productId"></span></strong></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- First Section - Product Information -->
+                    <div class="mb-4">
+
+                        <h3><span class="bg-success rounded-pill p-2 text-light">Product Information</span></h3>
+                        <div id="productInfoTableContainer">
+                            <!-- Product information table will be dynamically added here -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3><span class="bg-success rounded-pill p-2 text-light">Variant Information</span></h3>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Variant</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>image</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="variantInfoTableContainer">
+                                    <!-- Values will be added dynamically -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-dark" id="addVariantModal" tabindex="-1" aria-labelledby="addVariantModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addVariantModalLabel">Add Variant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form for Adding Variant -->
+                    <form id="addVariantForm">
+                        {% csrf_token %}
+                        <!-- Readonly Product Name -->
+
+                        <!-- Variant Dropdown -->
+                        <div class="mb-3">
+                            <input type="hidden" name="product_id" id="product_id" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="variantDropdown2" class="form-label">Select Variant</label>
+                            <select class="form-select" id="variantDropdown2">
+                                <!-- Variant options will be dynamically added here -->
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="attributeField" class="form-label">Attribute Field</label>
+                            <input type="text" class="form-control" value="L" id="attributeField">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="priceField" class="form-label">Price</label>
+                            <input type="number" class="form-control" value="900" id="priceField">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="imageField" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="imageField">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- product add script -->
+    <script>
+        $(document).ready(function () {
+
+            var currentPage = 1
+            fetchAllproduct();
+
+
+            $('#search_pro_form').submit(function (e) {
+                e.preventDefault();
+                const searchField = $('#search_pro_field').val();
+                fetchAllproduct(1, searchField);
+
+            });
+
+
+            function fetchAllproduct(pageNumber = 1, searchField = '') {
+
+
+                var url = "{% url 'product-op' %}";
+                var ordering = "product_id";
+
+                var requestData = {
+                    limit: 10,
+                    offset: (pageNumber - 1) * 10,
+                    page: pageNumber,
+                    ordering: ordering
+                };
+
+                if (searchField) {
+                    url = "/admins/api-product/";
+                    requestData.search = searchField;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: 'json',
+                    data: requestData,
+                    success: function (data) {
+                        console.log(data);
+
+                        displayProducts(data.results);
+                        $('#prevPageBtnPro').prop('disabled', !data.previous);
+                        $('#nextPageBtnPro').prop('disabled', !data.next);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        handleAjaxError(errorThrown, 'Error fetching customers: ' + textStatus);
+                    }
+                });
+
+
+            }
+            $('#prevPageBtnPro').click(function (event) {
+                currentPage--;
+                fetchAllproduct(currentPage);
+            });
+
+            $('#nextPageBtnPro').click(function (event) {
+                currentPage++;
+                fetchAllproduct(currentPage);
+            });
+
+            var tag_id_array = [];
+            $('#add_product_btn').click(function () {
+
+
+                $.ajax({
+                    url: "{% url 'variant-op' %}",
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        const variantDropdown = $('#variantType');
+
+
+                        variantDropdown.empty();
+
+
+                        $.each(data.results, function (index, variant) {
+                            variantDropdown.append($('<option>', {
+                                value: variant.variant_id,
+                                text: variant.variant_name
+                            }));
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching variant names:', error);
+                    }
+                });
+
+
+
+
+
+
+
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'category-op' %}",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var parentCategoryDropdown = $('#product_category');
+                        parentCategoryDropdown.empty();
+                        parentCategoryDropdown.append($('<option>').text('Select Product Category').val(''));
+
+                        $.each(data.results, function (index, category) {
+                            var parent_row = $('<option value="' + category.row_id + '">' + category.name + '</option>');
+                            parentCategoryDropdown.append(parent_row);
+                        });
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/admins/api-tag/?limit=1000",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var parentCategoryDropdown = $('#product_tags');
+                        parentCategoryDropdown.empty();
+                        parentCategoryDropdown.append($('<option>').text('Select Product Tag').val(''));
+
+
+
+                        $.each(data.results, function (index, category) {
+                            var parent_row = $('<li><input type=checkbox  name=pro_tags value="' + category.tag_id + '" />"' + category.tag_name + '"</li>');
+
+                            parentCategoryDropdown.append(parent_row);
+                        });
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'seller-op' %}",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var parentCategoryDropdown = $('#product_seller');
+                        parentCategoryDropdown.empty();
+                        parentCategoryDropdown.append($('<option>').text('Select Product Seller').val(''));
+
+
+
+                        $.each(data.results, function (index, category) {
+                            var parent_row = $('<option value="' + category.seller_id + '">' + category.seller_name + '</option>');
+                            parentCategoryDropdown.append(parent_row);
+                        });
+
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error submitting data");
+                    }
+                });
+
+
+
+
+            })
+
+            $('#productForm').submit(function (e) {
+                e.preventDefault();
+
+                const selectedTags = $("input[name='pro_tags']:checked").map(function () {
+                    return parseInt($(this).val());
+                }).get();
+
+                let fileInput = $('#imageFL')[0];
+                let file = fileInput.files[0];
+                var customTagsInput = $("#customTagsInput").val();
+                var customTagsArray = customTagsInput.split(',');
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/admins/add_tags/",
+                    contentType: "application/json",
+                    data: JSON.stringify({ tag_name: customTagsArray }),
+                    success: function (customTagsResponse) {
+                        try {
+                            var allTags = selectedTags.concat(customTagsResponse.tag_ids).map(function (tag) {
+                                return parseInt(tag);
+                            });
+
+                            handleProductDataInsertion(allTags);
+                        } catch (error) {
+                            console.error("Error processing custom tags response:", error);
+                            alert("Error processing custom tags response:" + error.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error inserting custom tags:", error);
+                        alert("Error inserting custom tags:" + error.responseText);
+                    }
+                });
+
+                function handleProductDataInsertion(allTags) {
+                    let reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var base64Image = e.target.result;
+
+                        let jsonData = {
+                            product_brand: $('#product_brand').val(),
+                            seller: $('#product_seller').val(),
+                            category: $('#product_category').val(),
+                            product_name: $("#product_name").val(),
+                            description: $("#description").val(),
+                            tags: allTags,
+                        };
+
+                        let jsonString = JSON.stringify(jsonData);
+
+                        var settings = {
+                            "url": "http://127.0.0.1:8000/admins/api-product/",
+                            "method": "POST",
+                            "timeout": 0,
+                            "headers": {
+                                "X-CSRFToken": $('#productForm [name=csrfmiddlewaretoken]').val()
+                            },
+                            "processData": false,
+                            "contentType": "application/json",
+                            "data": jsonString,
+                        };
+
+                        $.ajax(settings)
+                            .done(function (response) {
+                                try {
+                                    var productId = response.product_id;
+
+                                    let variantData = {
+                                        product: productId,
+                                        variants: $('#variantType').val(),
+                                        attr_value: $('#variantValue').val(),
+                                        price: $('#price').val(),
+                                        variant_image: base64Image
+                                    };
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "http://127.0.0.1:8000/admins/api-attribute/",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(variantData),
+                                        success: function (variantResponse) {
+                                            alert("Product Added Successfully!!");
+                                        },
+                                        error: function (error) {
+                                            console.error("Error inserting variant:", error);
+                                            alert("Error inserting variant:" + error.responseText);
+                                        }
+                                    });
+
+                                    fetchAllproduct();
+                                    $('#addPro').hide();
+                                } catch (error) {
+                                    console.error("Error processing response:", error);
+                                    alert("Error processing response:" + error.message);
+                                }
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                console.error("AJAX Error:", textStatus, errorThrown);
+                                alert("AJAX Error:" + errorThrown);
+                            });
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            /////////////////////////////////
+
+
+
+            function displayProducts(products) {
+
+                var categoryMap = {};
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:8000/admins/api-category/?limit=10000",
+                    success: function (categoryData) {
+                        categoryData.results.forEach(function (category) {
+                            categoryMap[category.row_id] = category.name;
+                        });
+                        console.log(categoryData);
+
+                        var productContainer = $('#productContainer');
+                        productContainer.empty();
+
+                        $.each(products, function (index, product) {
+                            var productRow = $('<tr>' +
+                                '<td>' + product.product_id + '</td>' +
+                                '<td>' + product.product_name + '</td>' +
+
+                                '<td>' + product.product_brand + '</td>' +
+                                '<td>' + categoryMap[product.category] + '</td>' +
+
+                                '<td>' +
+                                '<div class="button-grid">' +
+                                '<div class="button-row">' +
+                                '<button class="btn btn-warning btn-sm action-button action-btn" onclick="editProduct(' + product.product_id + ')"><b>Edit🖋️</b></button>' +
+                                '<button class="btn btn-danger btn-sm action-button action-btn" onclick="deleteProduct(' + product.product_id + ')"><b>Delete🗑️</b></button>' +
+                                '</div>' +
+                                '<div class="button-row">' +
+                                '<button class="btn btn-info btn-sm action-button action-btn" data-bs-toggle="modal" data-bs-target="#addVariantModal"  onclick="showAddVariantAlert(' + product.product_id + ', \'' + product.product_name + '\')"><b>Add Variant➕</b></button>' +
+                                '<button class="btn btn-sm action-button action-btn" style="background-color:#d5ed1f;color:black;" onclick="detailsProduct(' + product.product_id + ', \'' + product.product_name + '\')"><b>Details❓</b></button>' +
+                                '</div>' +
+                                '</div>' +
+                                '</td></tr>'
+                            );
+
+                            productContainer.append(productRow);
+                        });
+                    },
+                    error: function (error) {
+                        handleAjaxError(error.responseText, "Error fetching categories");
+                    }
+                });
+            }
+
+            window.showAddVariantAlert = function (productID, name) {
+
+                $('#addVariantModal').modal('show');
+                $('#product_id').val(productID);
+                $.ajax({
+                    type: "GET",
+                    url: "/admins/api-variant/",
+                    success: function (variantData) {
+                        var variantDropdown = $('#variantDropdown2');
+                        variantDropdown.empty();
+                        variantData.results.forEach(function (variant) {
+                            variantDropdown.append('<option value="' + variant.variant_id + '">' + variant.variant_name + '</option>');
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching variants:', error);
+                    }
+                });
+
+                $('#addVariantForm').submit(function (e) {
+    e.preventDefault();
+
+    try {
+        // Get values from form
+        var productID = $('#product_id').val();
+        var variantID = $('#variantDropdown2').val();
+        var attributeField = $('#attributeField').val();
+        var priceField = $('#priceField').val();
+
+       
+        let fileInput = $('#imageField')[0];
+        let imageField = fileInput.files[0];
+
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var base64Image = e.target.result;
+            console.log("base64Image", base64Image)
+
+            let formData={
+                product: productID,
+                    variants: variantID,
+                    attr_value: attributeField,
+                    price: priceField,
+                    variant_image: base64Image 
+
+            }
+
+            // console.log(fomrData.product);
+            // console.log(fomrData.variants);
+            // console.log(fomrData.attr_value);
+            // console.log(fomrData.variant_image);
+
+            $.ajax({
+                type: "POST",
+                url: "/admins/api-attribute/",
+                contentType: "application/json",             
+                data: JSON.stringify(formData),
+                
+                success: function (response) {
+                    alert('Jai Ho!! ' + response); 
+
+                    $('#addVariantModal').modal('hide');
+                },
+                error: function (error) {
+                   alert('Locha ho gaya bhaii!!', error);
+                }
+            });
+        };
+
+        reader.readAsDataURL(imageField);
+    } catch (err) {
+        console.error('An error occurred:', err);
+    }
+});
+
+
+
+                window.detailsProduct = function (productId, name) {
+
+
+                    $('#productDetailsModal').modal('show');
+                    $('#productId').text(name);
+
+
+                    $.ajax({
+                        url: '/admins/api-product/?search=' + productId,
+                        method: 'GET',
+                        success: function (productData) {
+
+
+                            var productTable = '<table class="table table-bordered"><thead><tr><th>Product ID</th><th>Product Name</th><th>Product Brand</th></tr></thead><tbody>';
+                            $.each(productData.results, function (index, product) {
+                                productTable += '<tr><td>' + product.product_id + '</td><td>' + product.product_name + '</td><td>' + product.product_brand + '</td></tr>';
+                            });
+                            productTable += '</tbody></table>';
+                            $('#productInfoTableContainer').html(productTable);
+                        },
+                        error: function (error) {
+                            console.error('Error fetching product data:', error);
+                        }
+                    });
+
+
+                    $.ajax({
+
+                        url: '/admins/api-attribute/?search=' + productId,
+                        method: 'GET',
+                        success: function (variantData) {
+                            displayAttribute(variantData.results);
+
+                        },
+                        error: function (error) {
+                            console.error('Error fetching variant data:', error);
+                        }
+                    });
+
+                    function displayAttribute(data) {
+
+                        variantsMap = {};
+                        $.ajax({
+                            type: "GET",
+                            url: "http://127.0.0.1:8000/admins/api-variant/?limit=10000",
+                            success: function (variantData) {
+                                variantData.results.forEach(function (variant) {
+                                    variantsMap[variant.variant_id] = variant.variant_name;
+
+                                });
+
+                                var variantContainer = $('#variantInfoTableContainer');
+                                variantContainer.empty();
+
+                                $.each(data, function (index, values) {
+
+                                    var variantType = variantsMap[values.variants];
+
+
+
+                                    var variantRow = $('<tr>' +
+                                        '<td>' + variantType + '</td>' +
+                                        '<td>' + values.attr_value + '</td>' +
+                                        '<td>' + values.price + '</td>' +
+                                        '<td><img src="' + values.variant_image + '" alt="Variant Image" style="max-width: 50px;"></td>' +
+                                        '</tr>'
+
+                                    );
+                                    variantContainer.append(variantRow);
+
+                                });
+
+
+                            },
+                            error: function (error) {
+                                handleAjaxError(error.responseText, "Error fetching categories");
+                            }
+                        });
+
+
+                    }
+                }
+
+                window.deleteProduct = function (product_id) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "DELETE",
+                                url: `/admins/api-product/${product_id}/`,
+                                dataType: 'json',
+                                success: function () {
+                                    fetchAllproduct();
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'The Product has been deleted.',
+                                        icon: 'success',
+                                        showConfirmButton: false,
+                                        timer: 1000
+                                    });
+                                },
+                                error: function (error) {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An error occurred while deleting the tag.',
+                                        icon: 'error'
+                                    });
+                                    handleAjaxError(error.responseText, 'Error deleting tag.');
+                                }
+                            });
+                        }
+                    });
+                }
+
+
+
+
+                function handleAjaxError(error, errorMessage) {
+                    console.error('Error:', error);
+                    alert(error);
+                }
+            }
+        });
+
+
+
+
+    </script>
+</body>
+
+
+</html>

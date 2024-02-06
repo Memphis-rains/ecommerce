@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Your head content here -->
+    <title>{% block title %}My Site{% endblock %}</title>
+</head>
+<body>
+    <!-- Navbar -->
+    {% block navbar %}
+        <nav>
+            <!-- Your navbar content here -->
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about/">About</a></li>
+                <!-- Add more navbar links as needed -->
+            </ul>
+        </nav>
+    {% endblock %}
+
+    <!-- Page content -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

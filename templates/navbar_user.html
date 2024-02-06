@@ -1,0 +1,148 @@
+<!-- Navigation -->
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<!-- navbar.html -->
+<link rel="icon" type="image/x-icon" href="{% static 'images/sitelogo3.png' %}">  
+
+<style>
+    .nav-link {
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .nav-link::before,
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        background-color: #007bff; /* Change the color as needed */
+        transition: width 0.3s ease-in-out;
+    }
+
+    .nav-link:hover::before,
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .nav-link::before {
+        left: 0;
+    }
+
+    .nav-link::after {
+        right: 0;
+    }
+</style>
+<nav class="navbar navbar-expand-lg h-25" style="background-color: rgb(255,255,255);color: rgb(243,112,113);object-fit: contain; margin-top: -4%;">
+    <img src="{% static 'images/sitelogo3.png' %} " alt="Company Logo" height="100">
+    <div class="container-fluid" style="margin-top: 25;font-size: 30px;">
+        
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" ">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <form class="d-flex" role="search">
+                <input  class="form-control" required class="form-control form" name="product_search" style="width: 660px;" accesskey="q" placeholder="Search for a product(Alt + q)">
+              <button class="btn btn-sm" style="background-color: rgb(236,132,133); font-size: 25px;" type="submit"  style="width: 150px;">Search<svg width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(236,132,133)" stroke="#ff0000" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.624"></g><g id="SVGRepo_iconCarrier"> <defs> <path id="search-a" d="M11.7099609,0.572509766 C9.46940104,1.29012044 7.99951172,3.05419922 7.30029297,5.86474609 C6.25146484,10.0805664 4.95166016,10.6181641 0.719970703,9.11865234 C2.23974609,11.9257813 5.32006836,13.0512695 7.30029297,13.0512695 C9.28051758,13.0512695 14.4091797,10.2941895 13.8215332,5.0534668 C13.3114421,3.52709961 12.6075846,2.03344727 11.7099609,0.572509766 Z"></path> <path id="search-c" d="M14.1791377,12.7701494 L19.7100661,18.3101411 C20.0966446,18.6967197 20.0966446,19.3234875 19.7100661,19.7100661 C19.3234875,20.0966446 18.6967197,20.0966446 18.3101411,19.7100661 L12.7803471,14.1712106 C11.4385246,15.2160226 9.75152329,15.8383427 7.91917136,15.8383427 C3.54553379,15.8383427 0,12.2928089 0,7.91917136 C0,3.54553379 3.54553379,0 7.91917136,0 C12.2928089,0 15.8383427,3.54553379 15.8383427,7.91917136 C15.8383427,9.74688445 15.2191696,11.4299819 14.1791377,12.7701494 Z M7.91917136,13.8585499 C11.1993995,13.8585499 13.8585499,11.1993995 13.8585499,7.91917136 C13.8585499,4.63894318 11.1993995,1.97979284 7.91917136,1.97979284 C4.63894318,1.97979284 1.97979284,4.63894318 1.97979284,7.91917136 C1.97979284,11.1993995 4.63894318,13.8585499 7.91917136,13.8585499 Z"></path> </defs> <g fill="none" fill-rule="evenodd" transform="translate(2 2)"> <g transform="translate(1 2)"> <mask id="search-b" fill="#05e164"> <use xlink:href="#search-a"></use> </mask> <use fill="#ff8f8f" xlink:href="#search-a"></use> <g fill="#FFA0A0" mask="url(#search-b)"> <rect width="24" height="24" transform="translate(-3 -4)"></rect> </g> </g> <mask id="search-d" fill="#05e164"> <use xlink:href="#search-c"></use> </mask> <use fill="#000000" fill-rule="nonzero" xlink:href="#search-c"></use> <g fill="#7600FF" mask="url(#search-d)"> <rect width="24" height="24" transform="translate(-2 -2)"></rect> </g> </g> </g></svg></button>
+              </form>
+          </li>
+          &nbsp;
+          <li class="nav-item">
+            <button onclick=window.location.href="/users/register" type="button" class="btn btn-warning" style="height: 49;background-color: rgb(236,132,133);color: white;font-size: 20;">
+                <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="sign-in-alt-3" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path id="secondary" d="M17.71,11.29l-4-4a1,1,0,1,0-1.42,1.42L14.59,11H3a1,1,0,0,0,0,2H14.59l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l4-4A1,1,0,0,0,17.71,11.29Z" style="fill: #ffffff;"></path><path id="primary" d="M20,2H10A2,2,0,0,0,8,4v6h4.17l-.58-.59a2,2,0,0,1,0-2.82,2,2,0,0,1,2.82,0l4,4a2,2,0,0,1,0,2.82l-4,4a2,2,0,0,1-2.82,0,2,2,0,0,1,0-2.82l.58-.59H8v6a2,2,0,0,0,2,2H20a2,2,0,0,0,2-2V4A2,2,0,0,0,20,2Z" style="fill: #ffffff;"></path></g></svg>
+                  Signin/Register
+            </button>
+          </li>
+          &nbsp;
+          <li class="nav-item dropdown">
+            <button  onclick=window.location.href="/users/profile" type="button" class="btn"  style="height: 49;background-color: rgb(236,132,133);color: white;font-size: 20;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bag-check-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0m-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                  </svg>
+                Profile</button>
+
+          </li>
+          &nbsp;
+          <li class="nav-item dropdown">
+            <button type="button" class="btn"  style="height: 49;background-color: rgb(236,132,133);color: white;font-size: 20;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bag-check-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0m-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                  </svg>
+                My Orders</button>
+
+          </li>
+         
+          
+          &nbsp;
+          <li class="nav-item">
+            <button type="button" class="btn position-relative" style="height: 49;background-color: rgb(236,132,133);color: white;font-size: 25;">
+                Cart <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                  </svg>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  99+
+                  <span class="visually-hidden">unread messages</span>
+                </span>
+              </button>
+          </li>
+
+
+
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+
+
+  <nav class="navbar navbar-expand-lg" style="color: rgb(255, 255, 255); background-color: #f37071; margin-top: -4%;">
+    <div class="container-fluid">
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse d-flex justify-content-between navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" act >Fashion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Electronics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Kids</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Gadgets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Best Sellers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Grievances Portal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Anime</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Fresh Anime</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Books</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+</nav>
